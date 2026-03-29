@@ -4,7 +4,9 @@ import { cn } from '@/lib/utils'
 type SamplePreviewItem = {
   title?: string | null
   subtitle?: string | null
+  imageSource?: 'url' | 'upload' | null
   imageUrl?: string | null
+  imageMedia?: any
   alt?: string | null
 }
 
@@ -64,52 +66,71 @@ export function SamplePreviewHomeBlockComponent({ block, locale }: Props) {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {block.items?.map((artifact, index) => (
-            <div
-              key={`${artifact.title}-${index}`}
-              className={cn(
-                'group relative overflow-hidden rounded-sm border border-background/10 bg-background/[0.03] transition-all duration-300 hover:border-background/20 hover:bg-background/[0.06]',
-                rtl && 'text-right',
-              )}
-            >
-              {index === 0 ? (
-                <div className={cn('absolute top-0 z-10', rtl ? 'right-0' : 'left-0')}>
-                  <div
-                    className={cn(
-                      'absolute top-0 h-[2px] w-4 bg-signature-cobalt-soft/60',
-                      rtl ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full',
-                    )}
+          {block.items?.map((artifact, index) => {
+            const media = artifact.imageMedia
+
+            const resolvedImageUrl =
+              artifact.imageSource === 'upload'
+                ? (typeof media === 'object' ? media?.url : artifact.imageUrl)
+                : artifact.imageUrl
+
+            const resolvedImageAlt =
+              artifact.imageSource === 'upload'
+                ? (typeof media === 'object'
+                    ? artifact.alt || media?.alt || artifact.title
+                    : artifact.alt || artifact.title)
+                : artifact.alt || artifact.title
+
+            const finalUrl = resolvedImageUrl ?? ''
+            const finalAlt = resolvedImageAlt ?? artifact.title ?? ''
+
+            return (
+              <div
+                key={`${artifact.title}-${index}`}
+                className={cn(
+                  'group relative overflow-hidden rounded-sm border border-background/10 bg-background/[0.03] transition-all duration-300 hover:border-background/20 hover:bg-background/[0.06]',
+                  rtl && 'text-right',
+                )}
+              >
+                {index === 0 ? (
+                  <div className={cn('absolute top-0 z-10', rtl ? 'right-0' : 'left-0')}>
+                    <div
+                      className={cn(
+                        'absolute top-0 h-[2px] w-4 bg-signature-cobalt-soft/60',
+                        rtl ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full',
+                      )}
+                    />
+                    <div
+                      className={cn(
+                        'absolute top-0 h-4 w-[2px] bg-signature-cobalt-soft/60 rounded-b-full',
+                        rtl ? 'right-0' : 'left-0',
+                      )}
+                    />
+                    <div
+                      className={cn(
+                        'absolute top-[2px] h-[1.5px] w-2 rounded-full bg-signature-brass-soft/50',
+                        rtl ? 'right-4' : 'left-4',
+                      )}
+                    />
+                  </div>
+                ) : null}
+
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={finalUrl}
+                    alt={finalAlt}
+                    className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
                   />
-                  <div
-                    className={cn(
-                      'absolute top-0 h-4 w-[2px] bg-signature-cobalt-soft/60 rounded-b-full',
-                      rtl ? 'right-0' : 'left-0',
-                    )}
-                  />
-                  <div
-                    className={cn(
-                      'absolute top-[2px] h-[1.5px] w-2 rounded-full bg-signature-brass-soft/50',
-                      rtl ? 'right-4' : 'left-4',
-                    )}
-                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
-              ) : null}
 
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={artifact.imageUrl ?? ''}
-                  alt={artifact.alt ?? artifact.title ?? ''}
-                  className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="p-5">
+                  <h3 className="mb-1.5 font-serif text-lg text-background">{artifact.title}</h3>
+                  <p className="text-sm leading-relaxed text-background/50">{artifact.subtitle}</p>
+                </div>
               </div>
-
-              <div className="p-5">
-                <h3 className="mb-1.5 font-serif text-lg text-background">{artifact.title}</h3>
-                <p className="text-sm leading-relaxed text-background/50">{artifact.subtitle}</p>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="mt-12 border-t border-background/10 pt-8">

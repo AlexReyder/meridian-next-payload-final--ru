@@ -13,13 +13,13 @@ export const ConceptsHomeBlock: Block = {
       name: 'eyebrow',
       type: 'text',
       required: true,
-      defaultValue: 'Portfolio',
+      defaultValue: 'Концепты',
     },
     {
       name: 'title',
       type: 'textarea',
       required: true,
-      defaultValue: 'Концепты студии',
+      defaultValue: 'Как это может выглядеть',
     },
     {
       name: 'description',
@@ -33,19 +33,19 @@ export const ConceptsHomeBlock: Block = {
           name: 'challengeLabel',
           type: 'text',
           required: true,
-          defaultValue: 'Задача',
+          defaultValue: 'Challenge',
         },
         {
           name: 'structuredLabel',
           type: 'text',
           required: true,
-          defaultValue: 'Что структурировали',
+          defaultValue: 'Structured',
         },
         {
           name: 'deliveredLabel',
           type: 'text',
           required: true,
-          defaultValue: 'Что подготовили',
+          defaultValue: 'Delivered',
         },
       ],
     },
@@ -88,7 +88,7 @@ export const ConceptsHomeBlock: Block = {
       name: 'items',
       type: 'array',
       required: true,
-      minRows: 3,
+      minRows: 1,
       fields: [
         {
           name: 'title',
@@ -116,9 +116,47 @@ export const ConceptsHomeBlock: Block = {
           required: true,
         },
         {
+          type: 'row',
+          fields: [
+            {
+              name: 'imageSource',
+              label: 'Источник изображения',
+              type: 'radio',
+              defaultValue: 'url',
+              options: [
+                { label: 'URL', value: 'url' },
+                { label: 'Загрузить файл', value: 'upload' },
+              ],
+              admin: {
+                width: '50%',
+              },
+            },
+            {
+              name: 'imageAlt',
+              label: 'Alt изображения',
+              type: 'text',
+              admin: {
+                width: '50%',
+              },
+            },
+          ],
+        },
+        {
           name: 'imageUrl',
+          label: 'URL изображения',
           type: 'text',
-          required: true,
+          admin: {
+            condition: (_, siblingData) => siblingData?.imageSource === 'url',
+          },
+        },
+        {
+          name: 'imageMedia',
+          label: 'Выберите файл',
+          type: 'upload',
+          relationTo: 'media',
+          admin: {
+            condition: (_, siblingData) => siblingData?.imageSource === 'upload',
+          },
         },
       ],
     },

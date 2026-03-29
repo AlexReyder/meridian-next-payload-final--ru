@@ -13,7 +13,9 @@ type ConceptItem = {
   challenge?: string | null
   clarified?: string | null
   prepared?: string | null
+  imageSource?: 'url' | 'upload' | null
   imageUrl?: string | null
+  imageMedia?: any
   imageAlt?: string | null
 }
 
@@ -35,6 +37,27 @@ type Props = {
   locale: Locale
 }
 
+function resolveConceptImage(item: ConceptItem) {
+  const media = item.imageMedia
+
+  const resolvedImageUrl =
+    item.imageSource === 'upload'
+      ? (typeof media === 'object' ? media?.url : item.imageUrl)
+      : item.imageUrl
+
+  const resolvedImageAlt =
+    item.imageSource === 'upload'
+      ? (typeof media === 'object'
+          ? item.imageAlt || media?.alt || item.title
+          : item.imageAlt || item.title)
+      : item.imageAlt || item.title
+
+  return {
+    finalUrl: resolvedImageUrl ?? '',
+    finalAlt: resolvedImageAlt ?? item.title ?? '',
+  }
+}
+
 function ConceptsGridCard({
   item,
   index,
@@ -51,6 +74,8 @@ function ConceptsGridCard({
   preparedLabel?: string | null
 }) {
   if (!item.title || !item.challenge || !item.clarified || !item.prepared) return null
+
+  const { finalUrl, finalAlt } = resolveConceptImage(item)
 
   return (
     <div className="relative bg-card rounded-sm border border-border overflow-hidden hover:border-foreground/20 transition-colors">
@@ -78,10 +103,10 @@ function ConceptsGridCard({
       )}
 
       <div className="aspect-[16/10] bg-secondary/50 border-b border-border/50 flex items-center justify-center overflow-hidden">
-        {item.imageUrl ? (
+        {finalUrl ? (
           <img
-            src={item.imageUrl}
-            alt={item.imageAlt || item.title}
+            src={finalUrl}
+            alt={finalAlt}
             className="h-full w-full object-cover"
           />
         ) : (
@@ -138,6 +163,8 @@ function ConceptsCarouselCard({
 }) {
   if (!item.title || !item.challenge || !item.clarified || !item.prepared) return null
 
+  const { finalUrl, finalAlt } = resolveConceptImage(item)
+
   return (
     <div className="group relative bg-card border border-border rounded-sm overflow-hidden hover:border-foreground/20 transition-all duration-300 flex-shrink-0 w-[calc(100vw-48px)] sm:w-[380px] lg:w-[400px] h-[680px] sm:h-[700px] lg:h-[720px] flex flex-col">
       <div className="absolute top-0 right-0 z-10">
@@ -147,10 +174,10 @@ function ConceptsCarouselCard({
       </div>
 
       <div className="relative h-[200px] sm:h-[220px] lg:h-[240px] flex-shrink-0 bg-[#1a1816] overflow-hidden">
-        {item.imageUrl ? (
+        {finalUrl ? (
           <img
-            src={item.imageUrl}
-            alt={item.imageAlt || item.title}
+            src={finalUrl}
+            alt={finalAlt}
             className="h-full w-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-500"
           />
         ) : (

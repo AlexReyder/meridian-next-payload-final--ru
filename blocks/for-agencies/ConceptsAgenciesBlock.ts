@@ -114,12 +114,47 @@ export const ConceptsAgenciesBlock: Block = {
           required: true,
         },
         {
-          name: 'imageUrl',
-          type: 'text',
+          type: 'row',
+          fields: [
+            {
+              name: 'imageSource',
+              label: 'Источник изображения',
+              type: 'radio',
+              defaultValue: 'url',
+              options: [
+                { label: 'URL', value: 'url' },
+                { label: 'Загрузить файл', value: 'upload' },
+              ],
+              admin: {
+                width: '50%',
+              },
+            },
+            {
+              name: 'imageAlt',
+              label: 'Alt изображения',
+              type: 'text',
+              admin: {
+                width: '50%',
+              },
+            },
+          ],
         },
         {
-          name: 'imageAlt',
+          name: 'imageUrl',
+          label: 'URL изображения',
           type: 'text',
+          admin: {
+            condition: (_, siblingData) => siblingData?.imageSource === 'url',
+          },
+        },
+        {
+          name: 'imageMedia',
+          label: 'Выберите файл',
+          type: 'upload',
+          relationTo: 'media',
+          admin: {
+            condition: (_, siblingData) => siblingData?.imageSource === 'upload',
+          },
         },
       ],
     },

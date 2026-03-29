@@ -13,7 +13,10 @@ type ConceptItem = {
   challenge?: string | null
   structured?: string | null
   delivered?: string | null
+  imageSource?: 'url' | 'upload' | null
   imageUrl?: string | null
+  imageMedia?: any
+  imageAlt?: string | null
 }
 
 type ConceptsHomeBlockData = {
@@ -35,6 +38,27 @@ type Props = {
   locale: Locale
 }
 
+function resolveConceptImage(concept: ConceptItem) {
+  const media = concept.imageMedia
+
+  const resolvedImageUrl =
+    concept.imageSource === 'upload'
+      ? (typeof media === 'object' ? media?.url : concept.imageUrl)
+      : concept.imageUrl
+
+  const resolvedImageAlt =
+    concept.imageSource === 'upload'
+      ? (typeof media === 'object'
+          ? concept.imageAlt || media?.alt || concept.title
+          : concept.imageAlt || concept.title)
+      : concept.imageAlt || concept.title
+
+  return {
+    finalUrl: resolvedImageUrl ?? '',
+    finalAlt: resolvedImageAlt ?? concept.title ?? '',
+  }
+}
+
 function ConceptCard({
   concept,
   locale,
@@ -53,6 +77,7 @@ function ConceptCard({
   conceptsHref: string
 }) {
   const rtl = isRTL(locale)
+  const { finalUrl, finalAlt } = resolveConceptImage(concept)
 
   return (
     <div className="group relative flex h-[680px] w-[calc(100vw-48px)] max-w-[400px] flex-shrink-0 flex-col overflow-hidden rounded-sm border border-border bg-card transition-all duration-300 hover:border-foreground/20 sm:w-[380px] lg:h-[720px] lg:w-[400px]">
@@ -79,8 +104,8 @@ function ConceptCard({
 
       <div className="relative h-[200px] flex-shrink-0 overflow-hidden bg-[#1a1816] sm:h-[220px] lg:h-[240px]">
         <img
-          src={concept.imageUrl ?? ''}
-          alt={concept.title ?? ''}
+          src={finalUrl}
+          alt={finalAlt}
           className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1a1816]/20 to-transparent" />
@@ -206,26 +231,25 @@ export function ConceptsHomeBlockComponent({ block, locale }: Props) {
       return
     }
 
-     autoplayRef.current = setInterval(() => {
-    const slider = sliderRef.current
-    if (!slider) return
+    autoplayRef.current = setInterval(() => {
+      const slider = sliderRef.current
+      if (!slider) return
 
-    setCurrentIndex((prev) => {
-      const next = (prev + 1) % totalSlides
-      const targetNode = itemRefs.current[next]
+      setCurrentIndex((prev) => {
+        const next = (prev + 1) % totalSlides
+        const targetNode = itemRefs.current[next]
 
-      if (targetNode) {
-        // Рассчитываем позицию внутри контейнера вручную
-        const targetLeft = targetNode.offsetLeft - slider.offsetLeft
-        
-        slider.scrollTo({
-          left: targetLeft,
-          behavior: 'smooth'
-        })
-      }
-      
-      return next
-    })
+        if (targetNode) {
+          const targetLeft = targetNode.offsetLeft - slider.offsetLeft
+
+          slider.scrollTo({
+            left: targetLeft,
+            behavior: 'smooth',
+          })
+        }
+
+        return next
+      })
     }, 5000)
 
     return () => {

@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+type ImageSource = 'url' | 'upload'
+
 export const ClientArtifactsSolutionsBlock: Block = {
   slug: 'clientArtifactsSolutions',
   labels: {
@@ -42,14 +44,50 @@ export const ClientArtifactsSolutionsBlock: Block = {
           required: true,
         },
         {
-          name: 'imageUrl',
-          type: 'text',
-          required: true,
+          type: 'row',
+          fields: [
+            {
+              name: 'imageSource',
+              label: 'Источник изображения',
+              type: 'radio',
+              defaultValue: 'url',
+              options: [
+                { label: 'URL', value: 'url' },
+                { label: 'Загрузить файл', value: 'upload' },
+              ],
+              admin: {
+                width: '50%',
+              },
+            },
+            {
+              name: 'alt',
+              label: 'Alt изображения',
+              type: 'text',
+              required: true,
+              admin: {
+                width: '50%',
+              },
+            },
+          ],
         },
         {
-          name: 'alt',
+          name: 'imageUrl',
+          label: 'URL изображения',
           type: 'text',
           required: true,
+          admin: {
+            condition: (_, siblingData) => siblingData?.imageSource === 'url',
+          },
+        },
+        {
+          name: 'imageMedia',
+          label: 'Выберите файл',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+          admin: {
+            condition: (_, siblingData) => siblingData?.imageSource === 'upload',
+          },
         },
       ],
     },

@@ -141,18 +141,103 @@ export const HeroBlock: Block = {
         },
       ],
     },
+
     {
-      type: 'row',
+      type: 'collapsible',
+      label: 'Desktop image',
       fields: [
         {
+          type: 'row',
+          fields: [
+            {
+              name: 'desktopImageSource',
+              label: 'Источник desktop-изображения',
+              type: 'radio',
+              defaultValue: 'upload',
+              options: [
+                { label: 'URL', value: 'url' },
+                { label: 'Загрузить файл', value: 'upload' },
+              ],
+              admin: {
+                width: '50%',
+              },
+            },
+            {
+              name: 'desktopImageAlt',
+              label: 'Alt desktop-изображения',
+              type: 'text',
+              admin: {
+                width: '50%',
+              },
+            },
+          ],
+        },
+        {
+          name: 'desktopImageUrl',
+          label: 'URL desktop-изображения',
+          type: 'text',
+          admin: {
+            condition: (_, siblingData) => siblingData?.desktopImageSource === 'url',
+          },
+        },
+        {
           name: 'desktopImage',
+          label: 'Desktop image',
           type: 'upload',
           relationTo: 'media',
+          admin: {
+            condition: (_, siblingData) => siblingData?.desktopImageSource === 'upload',
+          },
+        },
+      ],
+    },
+
+    {
+      type: 'collapsible',
+      label: 'Mobile image',
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'mobileImageSource',
+              label: 'Источник mobile-изображения',
+              type: 'radio',
+              defaultValue: 'upload',
+              options: [
+                { label: 'URL', value: 'url' },
+                { label: 'Загрузить файл', value: 'upload' },
+              ],
+              admin: {
+                width: '50%',
+              },
+            },
+            {
+              name: 'mobileImageAlt',
+              label: 'Alt mobile-изображения',
+              type: 'text',
+              admin: {
+                width: '50%',
+              },
+            },
+          ],
+        },
+        {
+          name: 'mobileImageUrl',
+          label: 'URL mobile-изображения',
+          type: 'text',
+          admin: {
+            condition: (_, siblingData) => siblingData?.mobileImageSource === 'url',
+          },
         },
         {
           name: 'mobileImage',
+          label: 'Mobile image',
           type: 'upload',
           relationTo: 'media',
+          admin: {
+            condition: (_, siblingData) => siblingData?.mobileImageSource === 'upload',
+          },
         },
       ],
     },

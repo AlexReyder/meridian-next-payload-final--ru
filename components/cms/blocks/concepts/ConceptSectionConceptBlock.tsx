@@ -11,7 +11,10 @@ type ConceptSectionConceptBlockData = {
   categoryLabel?: string | null
   title?: string | null
   intro?: string | null
+  imageSource?: 'url' | 'upload' | null
   image?: string | null
+  imageMedia?: any
+  imageAlt?: string | null
   challengeLabel?: string | null
   challenge?: string | null
   structuredLabel?: string | null
@@ -35,6 +38,20 @@ type Props = {
 export function ConceptSectionConceptBlockComponent({ block, locale }: Props) {
   const rtl = isRTL(locale)
   const isImageLeft = block.layout === 'imageLeft'
+
+  const media = block.imageMedia
+
+  const resolvedImageUrl =
+    block.imageSource === 'upload'
+      ? (typeof media === 'object' ? media?.url : block.image)
+      : block.image
+
+  const resolvedImageAlt =
+    block.imageSource === 'upload'
+      ? (typeof media === 'object'
+          ? block.imageAlt || media?.alt || block.title || 'Concept'
+          : block.imageAlt || block.title || 'Concept')
+      : block.imageAlt || block.title || 'Concept'
 
   return (
     <section
@@ -68,10 +85,10 @@ export function ConceptSectionConceptBlockComponent({ block, locale }: Props) {
               </div>
 
               <div className="relative aspect-[4/3] overflow-hidden rounded-sm border border-border/50 bg-muted shadow-lg lg:aspect-[5/4]">
-                {block.image ? (
+                {resolvedImageUrl ? (
                   <Image
-                    src={block.image}
-                    alt={block.title || 'Concept'}
+                    src={resolvedImageUrl}
+                    alt={resolvedImageAlt}
                     fill
                     className="object-cover object-top"
                     sizes="(max-width: 1024px) 100vw, 50vw"

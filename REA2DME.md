@@ -77,3 +77,4 @@ This is the initial scaffold for the Payload CMS rewrite.
 2. Add the next unique Home block as a second Payload block.
 3. Finish Home page completely.
 4. Repeat per page using controlled blocks, not a free-form builder.
+

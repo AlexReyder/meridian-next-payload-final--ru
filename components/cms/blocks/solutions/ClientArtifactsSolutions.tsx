@@ -4,7 +4,9 @@ import { cn } from '@/lib/utils'
 type ArtifactItem = {
   title?: string | null
   subtitle?: string | null
+  imageSource?: 'url' | 'upload' | null
   imageUrl?: string | null
+  imageMedia?: any
   alt?: string | null
 }
 
@@ -66,8 +68,27 @@ export function ClientArtifactsSolutionsBlockComponent({ block, locale }: Props)
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-          {block.items?.map((artifact, index) =>
-            artifact?.title ? (
+          {block.items?.map((artifact, index) => {
+            if (!artifact?.title) return null
+
+            const media = artifact.imageMedia
+
+            const resolvedImageUrl =
+              artifact.imageSource === 'upload'
+                ? (typeof media === 'object' ? media?.url : artifact.imageUrl)
+                : artifact.imageUrl
+
+            const resolvedImageAlt =
+              artifact.imageSource === 'upload'
+                ? (typeof media === 'object'
+                    ? artifact.alt || media?.alt || artifact.title
+                    : artifact.alt || artifact.title)
+                : artifact.alt || artifact.title
+
+            const finalUrl = resolvedImageUrl ?? ''
+            const finalAlt = resolvedImageAlt ?? artifact.title
+
+            return (
               <div
                 key={`${artifact.title}-${index}`}
                 className="group relative overflow-hidden rounded-sm border border-background/[0.12] bg-background/[0.06] transition-all duration-300 hover:border-background/20 hover:bg-background/[0.08]"
@@ -97,8 +118,8 @@ export function ClientArtifactsSolutionsBlockComponent({ block, locale }: Props)
 
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <img
-                    src={artifact.imageUrl ?? ''}
-                    alt={artifact.alt ?? artifact.title}
+                    src={finalUrl}
+                    alt={finalAlt}
                     className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent" />
@@ -113,8 +134,8 @@ export function ClientArtifactsSolutionsBlockComponent({ block, locale }: Props)
                   </p>
                 </div>
               </div>
-            ) : null,
-          )}
+            )
+          })}
         </div>
 
         <div className="mt-10 flex items-center justify-center border-t border-background/10 pt-8">

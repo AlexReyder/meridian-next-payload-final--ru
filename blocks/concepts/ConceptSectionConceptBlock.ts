@@ -39,9 +39,49 @@ export const ConceptSectionConceptBlock: Block = {
       required: true,
     },
     {
+      type: 'row',
+      fields: [
+        {
+          name: 'imageSource',
+          label: 'Источник изображения',
+          type: 'radio',
+          defaultValue: 'url',
+          options: [
+            { label: 'URL', value: 'url' },
+            { label: 'Загрузить файл', value: 'upload' },
+          ],
+          admin: {
+            width: '50%',
+          },
+        },
+        {
+          name: 'imageAlt',
+          label: 'Alt изображения',
+          type: 'text',
+          localized: true,
+          admin: {
+            width: '50%',
+          },
+        },
+      ],
+    },
+    {
       name: 'image',
+      label: 'URL изображения',
       type: 'text',
       required: true,
+      admin: {
+        condition: (_, siblingData) => siblingData?.imageSource === 'url',
+      },
+    },
+    {
+      name: 'imageMedia',
+      label: 'Выберите файл',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        condition: (_, siblingData) => siblingData?.imageSource === 'upload',
+      },
     },
     {
       name: 'challengeLabel',

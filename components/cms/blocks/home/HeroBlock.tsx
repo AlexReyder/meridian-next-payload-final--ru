@@ -38,7 +38,15 @@ type HeroBlockData = {
   secondaryPageKey?: PageKey | null
   desktopBadgeLabel?: string | null
   mobileBadgeLabel?: string | null
+
+  desktopImageSource?: 'url' | 'upload' | null
+  desktopImageUrl?: string | null
+  desktopImageAlt?: string | null
   desktopImage?: unknown
+
+  mobileImageSource?: 'url' | 'upload' | null
+  mobileImageUrl?: string | null
+  mobileImageAlt?: string | null
   mobileImage?: unknown
 }
 
@@ -99,8 +107,26 @@ export function HeroBlockComponent({ block, locale }: Props) {
   const fallback = localeFallbacks[locale]
 
   const titleRows = normalizeTitleRows(block)
-  const desktopImageUrl = getMediaUrl(block.desktopImage) ?? FALLBACK_IMAGES.desktop
-  const mobileImageUrl = getMediaUrl(block.mobileImage) ?? FALLBACK_IMAGES.mobile
+
+  const desktopImageUrl =
+    block.desktopImageSource === 'url'
+      ? block.desktopImageUrl || FALLBACK_IMAGES.desktop
+      : getMediaUrl(block.desktopImage) ?? block.desktopImageUrl ?? FALLBACK_IMAGES.desktop
+
+  const mobileImageUrl =
+    block.mobileImageSource === 'url'
+      ? block.mobileImageUrl || FALLBACK_IMAGES.mobile
+      : getMediaUrl(block.mobileImage) ?? block.mobileImageUrl ?? FALLBACK_IMAGES.mobile
+
+  const desktopImageAlt =
+    block.desktopImageSource === 'url'
+      ? block.desktopImageAlt || fallback.desktopAlt
+      : getMediaAlt(block.desktopImage, block.desktopImageAlt ?? fallback.desktopAlt)
+
+  const mobileImageAlt =
+    block.mobileImageSource === 'url'
+      ? block.mobileImageAlt || fallback.mobileAlt
+      : getMediaAlt(block.mobileImage, block.mobileImageAlt ?? fallback.mobileAlt)
 
   const primaryHref = getHrefForPageKey(block.primaryPageKey ?? 'get-proposal', locale)
   const secondaryHref = getHrefForPageKey(block.secondaryPageKey ?? 'pricing', locale)
@@ -290,7 +316,7 @@ export function HeroBlockComponent({ block, locale }: Props) {
                           <div className="relative aspect-[16/10] overflow-hidden">
                             <img
                               src={desktopImageUrl}
-                              alt={getMediaAlt(block.desktopImage, fallback.desktopAlt)}
+                              alt={desktopImageAlt}
                               className="h-full w-full object-cover object-top"
                             />
                             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.03] via-transparent to-transparent" />
@@ -352,7 +378,7 @@ export function HeroBlockComponent({ block, locale }: Props) {
                         <div className="relative aspect-[9/19.5] overflow-hidden bg-white">
                           <img
                             src={mobileImageUrl}
-                            alt={getMediaAlt(block.mobileImage, fallback.mobileAlt)}
+                            alt={mobileImageAlt}
                             className="h-full w-full object-cover object-top"
                           />
                         </div>
@@ -384,6 +410,7 @@ export function HeroBlockComponent({ block, locale }: Props) {
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>

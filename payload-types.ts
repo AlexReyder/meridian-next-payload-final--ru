@@ -274,7 +274,13 @@ export interface Page {
           | null;
         desktopBadgeLabel?: string | null;
         mobileBadgeLabel?: string | null;
+        desktopImageSource?: ('url' | 'upload') | null;
+        desktopImageAlt?: string | null;
+        desktopImageUrl?: string | null;
         desktopImage?: (number | null) | Media;
+        mobileImageSource?: ('url' | 'upload') | null;
+        mobileImageAlt?: string | null;
+        mobileImageUrl?: string | null;
         mobileImage?: (number | null) | Media;
         id?: string | null;
         blockName?: string | null;
@@ -428,7 +434,10 @@ export interface Page {
           challenge: string;
           structured: string;
           delivered: string;
-          imageUrl: string;
+          imageSource?: ('url' | 'upload') | null;
+          imageAlt?: string | null;
+          imageUrl?: string | null;
+          imageMedia?: (number | null) | Media;
           id?: string | null;
         }[];
         id?: string | null;
@@ -517,8 +526,10 @@ export interface Page {
         items: {
           title: string;
           subtitle: string;
-          imageUrl: string;
+          imageSource?: ('url' | 'upload') | null;
           alt: string;
+          imageUrl?: string | null;
+          imageMedia?: (number | null) | Media;
           id?: string | null;
         }[];
         bottomNote: string;
@@ -694,8 +705,10 @@ export interface Page {
         items: {
           title: string;
           subtitle: string;
-          imageUrl: string;
+          imageSource?: ('url' | 'upload') | null;
           alt: string;
+          imageUrl?: string | null;
+          imageMedia?: (number | null) | Media;
           id?: string | null;
         }[];
         bottomNote: string;
@@ -1146,8 +1159,10 @@ export interface Page {
           challenge: string;
           clarified: string;
           prepared: string;
-          imageUrl?: string | null;
+          imageSource?: ('url' | 'upload') | null;
           imageAlt?: string | null;
+          imageUrl?: string | null;
+          imageMedia?: (number | null) | Media;
           id?: string | null;
         }[];
         id?: string | null;
@@ -1768,7 +1783,10 @@ export interface Page {
         categoryLabel: string;
         title: string;
         intro: string;
-        image: string;
+        imageSource?: ('url' | 'upload') | null;
+        imageAlt?: string | null;
+        image?: string | null;
+        imageMedia?: (number | null) | Media;
         challengeLabel: string;
         challenge: string;
         structuredLabel: string;
@@ -2090,7 +2108,13 @@ export interface PagesSelect<T extends boolean = true> {
               secondaryPageKey?: T;
               desktopBadgeLabel?: T;
               mobileBadgeLabel?: T;
+              desktopImageSource?: T;
+              desktopImageAlt?: T;
+              desktopImageUrl?: T;
               desktopImage?: T;
+              mobileImageSource?: T;
+              mobileImageAlt?: T;
+              mobileImageUrl?: T;
               mobileImage?: T;
               id?: T;
               blockName?: T;
@@ -2228,7 +2252,10 @@ export interface PagesSelect<T extends boolean = true> {
                     challenge?: T;
                     structured?: T;
                     delivered?: T;
+                    imageSource?: T;
+                    imageAlt?: T;
                     imageUrl?: T;
+                    imageMedia?: T;
                     id?: T;
                   };
               id?: T;
@@ -2317,8 +2344,10 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     title?: T;
                     subtitle?: T;
-                    imageUrl?: T;
+                    imageSource?: T;
                     alt?: T;
+                    imageUrl?: T;
+                    imageMedia?: T;
                     id?: T;
                   };
               bottomNote?: T;
@@ -2471,8 +2500,10 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     title?: T;
                     subtitle?: T;
-                    imageUrl?: T;
+                    imageSource?: T;
                     alt?: T;
+                    imageUrl?: T;
+                    imageMedia?: T;
                     id?: T;
                   };
               bottomNote?: T;
@@ -2885,8 +2916,10 @@ export interface PagesSelect<T extends boolean = true> {
                     challenge?: T;
                     clarified?: T;
                     prepared?: T;
-                    imageUrl?: T;
+                    imageSource?: T;
                     imageAlt?: T;
+                    imageUrl?: T;
+                    imageMedia?: T;
                     id?: T;
                   };
               id?: T;
@@ -3415,7 +3448,10 @@ export interface PagesSelect<T extends boolean = true> {
               categoryLabel?: T;
               title?: T;
               intro?: T;
+              imageSource?: T;
+              imageAlt?: T;
               image?: T;
+              imageMedia?: T;
               challengeLabel?: T;
               challenge?: T;
               structuredLabel?: T;
