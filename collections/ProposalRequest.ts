@@ -2,6 +2,10 @@ import type { CollectionConfig } from 'payload'
 
 export const ProposalRequests: CollectionConfig = {
   slug: 'proposal-requests',
+   labels: {
+    singular: 'Заявка',
+    plural: 'Заявки',
+  },
   access: {
     read: ({ req }) => Boolean(req.user),
     create: () => true,

@@ -146,119 +146,132 @@ async function revalidatePaths(paths: string[]) {
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
+  labels: {
+    singular: 'Страница',
+    plural: 'Страницы',
+  },
   hooks: {
-  afterChange: [
-    async ({ doc, previousDoc, req }) => {
-      const locale = normalizeLocale(req.locale)
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        const locale = normalizeLocale(req.locale)
 
-      await revalidatePaths([
-        ...getDocPaths(previousDoc as any, locale),
-        ...getDocPaths(doc as any, locale),
-      ])
-    },
-  ],
-  afterDelete: [
-    async ({ doc, req }) => {
-      const locale = normalizeLocale(req.locale)
-      await revalidatePaths(getDocPaths(doc as any, locale))
-    },
-  ],
-},
+        await revalidatePaths([
+          ...getDocPaths(previousDoc as any, locale),
+          ...getDocPaths(doc as any, locale),
+        ])
+      },
+    ],
+    afterDelete: [
+      async ({ doc, req }) => {
+        const locale = normalizeLocale(req.locale)
+        await revalidatePaths(getDocPaths(doc as any, locale))
+      },
+    ],
+  },
   access: {
     read: () => true,
   },
   admin: {
     useAsTitle: 'internalName',
-  defaultColumns: ['internalName', 'routeType', 'pageKey', 'slug', 'updatedAt'],
+    defaultColumns: ['internalName', 'routeType', 'pageKey', 'slug', 'updatedAt'],
   },
   fields: [
-   {
-  name: 'routeType',
-  type: 'radio',
-  required: true,
-  defaultValue: 'custom',
-  options: [
-    { label: 'Custom page', value: 'custom' },
-    { label: 'System page', value: 'system' },
-  ],
-  admin: {
-    description: 'For new pages from admin choose Custom page.',
-  },
-},
-  {
-    name: 'pageKey',
-    type: 'select',
-    unique: true,
-    options: PAGE_KEY_OPTIONS,
-    admin: {
-      condition: (_, siblingData) =>
-        (siblingData?.routeType ?? 'system') === 'system',
-    },
-   validate: (
-  value: string | null | undefined,
-  { siblingData }: { siblingData?: { routeType?: string | null } },
-) => {
-  if ((siblingData?.routeType ?? 'system') === 'system' && !value) {
-    return 'pageKey is required for system pages'
-  }
-
-  return true
-},
-  },
-  {
-    name: 'slug',
-    type: 'text',
-    localized: true,
-    admin: {
-      condition: (_, siblingData) => siblingData?.routeType === 'custom',
-      description:
-        'Without locale prefix. Example: test or services/fintech-ui',
-    },
-    hooks: {
-      beforeValidate: [
-        ({ value }) => {
-          if (typeof value !== 'string') return value
-          return normalizeSlug(value)
-        },
+    {
+      name: 'routeType',
+      label: 'Тип маршрута',
+      type: 'radio',
+      required: true,
+      defaultValue: 'custom',
+      options: [
+        { label: 'Пользовательская страница', value: 'custom' },
+        { label: 'Системная страница', value: 'system' },
       ],
+      admin: {
+        description: 'Для новых страниц из админки выбирайте “Пользовательская страница”.',
+      },
     },
-    validate: ( value: string | null | undefined,
-  { siblingData }: { siblingData?: { routeType?: string | null } },) => {
-      if (siblingData?.routeType !== 'custom') return true
+    {
+      name: 'pageKey',
+      label: 'Ключ страницы',
+      type: 'select',
+      unique: true,
+      options: PAGE_KEY_OPTIONS,
+      admin: {
+        condition: (_, siblingData) =>
+          (siblingData?.routeType ?? 'system') === 'system',
+      },
+      validate: (
+        value: string | null | undefined,
+        { siblingData }: { siblingData?: { routeType?: string | null } },
+      ) => {
+        if ((siblingData?.routeType ?? 'system') === 'system' && !value) {
+          return 'pageKey is required for system pages'
+        }
 
-      const slug = typeof value === 'string' ? normalizeSlug(value) : ''
-
-      if (!slug) return 'slug is required for custom pages'
-      if (slug === 'en' || slug === 'ar') {
-        return 'slug must not equal locale prefix'
-      }
-      if (slug.includes('//')) {
-        return 'slug must not contain empty segments'
-      }
-
-      return true
+        return true
+      },
     },
-  },
-  {
-    name: 'internalName',
-    type: 'text',
-    required: true,
-    admin: {
-      description: 'Human-readable page name for editors.',
+    {
+      name: 'slug',
+      label: 'Slug',
+      type: 'text',
+      localized: true,
+      admin: {
+        condition: (_, siblingData) => siblingData?.routeType === 'custom',
+        description:
+          'Без префикса локали. Например: test или services/fintech-ui',
+      },
+      hooks: {
+        beforeValidate: [
+          ({ value }) => {
+            if (typeof value !== 'string') return value
+            return normalizeSlug(value)
+          },
+        ],
+      },
+      validate: (
+        value: string | null | undefined,
+        { siblingData }: { siblingData?: { routeType?: string | null } },
+      ) => {
+        if (siblingData?.routeType !== 'custom') return true
+
+        const slug = typeof value === 'string' ? normalizeSlug(value) : ''
+
+        if (!slug) return 'slug is required for custom pages'
+        if (slug === 'en' || slug === 'ar') {
+          return 'slug must not equal locale prefix'
+        }
+        if (slug.includes('//')) {
+          return 'slug must not contain empty segments'
+        }
+
+        return true
+      },
     },
-  },
+    {
+      name: 'internalName',
+      label: 'Внутреннее название',
+      type: 'text',
+      required: true,
+      admin: {
+        description: 'Человекочитаемое название страницы для редакторов.',
+      },
+    },
     {
       name: 'metaTitle',
+      label: 'Meta title',
       type: 'text',
       localized: true,
     },
     {
       name: 'metaDescription',
+      label: 'Meta description',
       type: 'textarea',
       localized: true,
     },
     {
       name: 'layout',
+      label: 'Макет страницы',
       type: 'blocks',
       localized: true,
       required: true,
@@ -277,7 +290,6 @@ export const Pages: CollectionConfig = {
         TrustHomeBlock,
         FaqHomeBlock,
         FinalCtaHomeBlock,
-        //solutions
         HeroSolutionsBlock,
         PositioningIntroSolutionsBlock,
         GridSolutionsBlock,
@@ -287,7 +299,6 @@ export const Pages: CollectionConfig = {
         WhySolutionsBlock,
         ConnectedCtaSolutionsBlock,
         FaqSolutionsBlock,
-        //for-startups
         HeroStartupsBlock,
         ValueStartupsBlock,
         DeliverablesStartupsBlock,
@@ -298,7 +309,6 @@ export const Pages: CollectionConfig = {
         ConceptsStartupsBlock,
         CTAStartupsBlock,
         FAQStartupsBlock,
-        //for-agencies
         HeroAgenciesBlock,
         PartnersClarificationAgenciesBlock,
         AudienceAgenciesBlock,
@@ -310,7 +320,6 @@ export const Pages: CollectionConfig = {
         ConceptsAgenciesBlock,
         CTAAgenciesBlock,
         FAQAgenciesBlock,
-        //pricing
         HeroPricingBlock,
         PositioningBlockPricingBlock,
         PackageCardsPricingBlock,
@@ -320,18 +329,15 @@ export const Pages: CollectionConfig = {
         NoCallCtaPricingBlock,
         FaqPricingBlock,
         FinalCtaPricingBlock,
-        //method
         HeroMethodBlock,
         StepsMethodBlock,
         DeliverablesMethodBlock,
         CTAMethodBlock,
-        //proposal
         HeroProposalBlock,
         TrustProposalBlock,
         FaqProposalBlock,
         ProposalFlowProposalBlock,
         FinalSupportProposalBlock,
-        //concepts
         HeroConceptsBlock,
         IntroConceptsBlock,
         NavConceptsBlock,

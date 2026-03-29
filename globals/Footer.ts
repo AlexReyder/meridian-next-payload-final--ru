@@ -5,22 +5,26 @@ import { PAGE_KEY_OPTIONS } from '@/lib/routes'
 const linkFields = [
   {
     name: 'label',
+    label: 'Название ссылки',
     type: 'text',
     required: true,
   },
   {
     name: 'pageKey',
+    label: 'Страница',
     type: 'select',
     required: false,
     options: PAGE_KEY_OPTIONS,
   },
   {
     name: 'href',
+    label: 'Внешняя ссылка',
     type: 'text',
     required: false,
   },
   {
     name: 'anchor',
+    label: 'Якорь',
     type: 'text',
     required: false,
   },
@@ -28,75 +32,92 @@ const linkFields = [
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
-  label: 'Footer',
+  label: 'Подвал сайта',
   access: {
     read: () => true,
   },
   admin: {
-    group: 'Globals',
+    group: 'Глобальные настройки',
   },
   fields: [
     {
       name: 'variant',
+      label: 'Вариант оформления',
       type: 'select',
       localized: true,
       required: true,
       defaultValue: 'dark',
       options: [
-        { label: 'Dark / RU style', value: 'dark' },
-        { label: 'Light / EN-AR style', value: 'light' },
+        { label: 'Тёмный / стиль RU', value: 'dark' },
+        { label: 'Светлый / стиль EN-AR', value: 'light' },
       ],
     },
     {
       name: 'brandName',
+      label: 'Название бренда',
       type: 'text',
       localized: true,
       required: true,
     },
     {
       name: 'brandTagline',
+      label: 'Подпись бренда',
       type: 'text',
       localized: true,
       required: true,
     },
     {
       name: 'description',
+      label: 'Описание',
       type: 'textarea',
       localized: true,
       required: true,
     },
     {
       name: 'brandEmail',
+      label: 'Email бренда',
       type: 'email',
       localized: true,
       required: false,
     },
     {
       name: 'columns',
+      label: 'Колонки',
       type: 'array',
       localized: true,
       required: true,
       minRows: 1,
+      labels: {
+        singular: 'Колонка',
+        plural: 'Колонки',
+      },
       fields: [
         {
           name: 'type',
+          label: 'Тип колонки',
           type: 'select',
           required: true,
           defaultValue: 'links',
           options: [
-            { label: 'Links', value: 'links' },
-            { label: 'CTA', value: 'cta' },
+            { label: 'Ссылки', value: 'links' },
+            { label: 'CTA-блок', value: 'cta' },
           ],
         },
         {
           name: 'title',
+          label: 'Заголовок',
           type: 'text',
           required: true,
         },
         {
           name: 'links',
+          label: 'Ссылки',
           type: 'array',
           required: false,
+          labels: {
+            singular: 'Ссылка',
+            plural: 'Ссылки',
+          },
           admin: {
             condition: (_, siblingData) => siblingData?.type === 'links',
           },
@@ -104,6 +125,7 @@ export const Footer: GlobalConfig = {
         },
         {
           name: 'body',
+          label: 'Текст блока',
           type: 'textarea',
           required: false,
           admin: {
@@ -112,6 +134,7 @@ export const Footer: GlobalConfig = {
         },
         {
           name: 'buttonLabel',
+          label: 'Текст кнопки',
           type: 'text',
           required: false,
           admin: {
@@ -120,6 +143,7 @@ export const Footer: GlobalConfig = {
         },
         {
           name: 'buttonPageKey',
+          label: 'Страница кнопки',
           type: 'select',
           required: false,
           options: PAGE_KEY_OPTIONS,
@@ -129,6 +153,7 @@ export const Footer: GlobalConfig = {
         },
         {
           name: 'buttonHref',
+          label: 'Внешняя ссылка кнопки',
           type: 'text',
           required: false,
           admin: {
@@ -139,15 +164,21 @@ export const Footer: GlobalConfig = {
     },
     {
       name: 'bottomTextTemplate',
+      label: 'Нижний текстовый шаблон',
       type: 'text',
       localized: true,
       required: true,
     },
     {
       name: 'bottomLinks',
+      label: 'Нижние ссылки',
       type: 'array',
       localized: true,
       required: false,
+      labels: {
+        singular: 'Нижняя ссылка',
+        plural: 'Нижние ссылки',
+      },
       fields: linkFields as Field[],
     },
   ],

@@ -199,18 +199,18 @@ export interface Media {
 export interface Page {
   id: number;
   /**
-   * For new pages from admin choose Custom page.
+   * Для новых страниц из админки выбирайте “Пользовательская страница”.
    */
   routeType: 'custom' | 'system';
   pageKey?:
     | ('home' | 'solutions' | 'pricing' | 'get-proposal' | 'concepts' | 'for-startups' | 'for-partners' | 'method')
     | null;
   /**
-   * Without locale prefix. Example: test or services/fintech-ui
+   * Без префикса локали. Например: test или services/fintech-ui
    */
   slug?: string | null;
   /**
-   * Human-readable page name for editors.
+   * Человекочитаемое название страницы для редакторов.
    */
   internalName: string;
   metaTitle?: string | null;

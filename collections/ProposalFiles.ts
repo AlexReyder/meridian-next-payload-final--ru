@@ -2,6 +2,10 @@ import type { CollectionConfig } from 'payload'
 
 export const ProposalFiles: CollectionConfig = {
   slug: 'proposal-files',
+   labels: {
+    singular: 'Файл заявки',
+    plural: 'Файлы заявок',
+  },
   access: {
     read: () => false,
     create: () => true,
