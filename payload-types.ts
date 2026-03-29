@@ -309,15 +309,18 @@ export interface Page {
         blockType: 'valueHome';
       }
     | {
+        displayMode: 'full' | 'compact';
         eyebrow: string;
         title: string;
         subheadline: string;
-        metaBadges: {
-          label: string;
-          id?: string | null;
-        }[];
-        videoLabel?: string | null;
-        durationLabel?: string | null;
+        videoLabel: string;
+        durationLabel: string;
+        metaBadges?:
+          | {
+              label: string;
+              id?: string | null;
+            }[]
+          | null;
         timeline: {
           number: string;
           label: string;
@@ -351,6 +354,16 @@ export interface Page {
           | 'for-startups'
           | 'for-partners'
           | 'method';
+        videoSource: 'url' | 'upload';
+        /**
+         * Можно использовать прямую ссылку на mp4/webm.
+         */
+        videoUrl?: string | null;
+        videoFile?: (number | null) | Media;
+        posterSource: 'url' | 'upload';
+        posterUrl?: string | null;
+        posterMedia?: (number | null) | Media;
+        posterAlt?: string | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'videoWalkthroughHome';
@@ -2141,17 +2154,18 @@ export interface PagesSelect<T extends boolean = true> {
         videoWalkthroughHome?:
           | T
           | {
+              displayMode?: T;
               eyebrow?: T;
               title?: T;
               subheadline?: T;
+              videoLabel?: T;
+              durationLabel?: T;
               metaBadges?:
                 | T
                 | {
                     label?: T;
                     id?: T;
                   };
-              videoLabel?: T;
-              durationLabel?: T;
               timeline?:
                 | T
                 | {
@@ -2173,6 +2187,13 @@ export interface PagesSelect<T extends boolean = true> {
               primaryPageKey?: T;
               secondaryButtonLabel?: T;
               secondaryPageKey?: T;
+              videoSource?: T;
+              videoUrl?: T;
+              videoFile?: T;
+              posterSource?: T;
+              posterUrl?: T;
+              posterMedia?: T;
+              posterAlt?: T;
               id?: T;
               blockName?: T;
             };
